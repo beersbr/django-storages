@@ -402,7 +402,10 @@ class S3BotoStorage(Storage):
 
         content.name = cleaned_name
         encoded_name = self._encode_name(name)
-        key = self.bucket.get_key(encoded_name)
+        # When trying to sublclass to insert the usage of a role the check to see if the file exists throws a 403 because
+        # the headers are not sent to this method.
+        # key = self.bucket.get_key(encoded_name)
+        key = self.bucket.get_key(encoded_name, headers=headers)
         if not key:
             key = self.bucket.new_key(encoded_name)
         if self.preload_metadata:
